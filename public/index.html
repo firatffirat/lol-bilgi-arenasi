@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07101f"><title>LoL Bilgi Arenası</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="ambient a1"></div><div class="ambient a2"></div>
+  <header class="topbar"><div class="brand-mark">L</div><div><div class="brand-title">LOL BİLGİ ARENASI</div><div class="brand-sub">ARKADAŞLAR ARASI BİLGİ SAVAŞI</div></div><button id="rulesBtn" class="icon-btn" aria-label="Kurallar">?</button></header>
+  <main>
+    <section id="home" class="screen active">
+      <div class="hero"><div class="eyebrow">◆ SUMMONER'S RIFT ◆</div><h1>Bilgini<br><span>kanıtla.</span></h1><p>30 soru. 5 oyuncuya kadar. Tek şampiyon belli olacak.</p></div>
+      <div class="panel home-panel">
+        <label for="playerName">OYUNCU ADI</label><input id="playerName" maxlength="18" placeholder="Oyuncu adını yaz" autocomplete="nickname">
+        <div class="home-actions"><button id="createBtn" class="gold-btn">✦ ODA OLUŞTUR</button><div class="join-row"><input id="roomCode" maxlength="6" inputmode="numeric" placeholder="6 HANELİ KOD"><button id="joinBtn" class="blue-btn">ODAYA KATIL</button></div></div>
+        <div class="home-foot"><span>♟ En fazla 5 oyuncu</span><span>◷ 20 saniye / soru</span><span>✦ 30 soru</span></div>
+      </div>
+      <div class="small-note">Bu, arkadaş grubuna özel bağımsız bir hayran projesidir.</div>
+    </section>
+
+    <section id="lobby" class="screen">
+      <div class="section-heading"><div class="eyebrow">TAKIMINI TOPLA</div><h2>Bekleme Odası</h2><p>Herkes hazır olduğunda savaş başlar.</p></div>
+      <div class="panel room-code-panel"><div><label>ODA KODU</label><strong id="roomCodeView">------</strong></div><button id="copyCode" class="copy-btn">KOPYALA</button></div>
+      <div class="panel players-panel"><div class="panel-title"><span>OYUNCULAR</span><span id="playerCount">0 / 5</span></div><div id="playerList" class="player-list"></div></div>
+      <div class="lobby-actions"><button id="readyBtn" class="green-btn">✓ HAZIRIM</button><button id="startBtn" class="gold-btn" disabled>YARIŞMAYI BAŞLAT</button></div>
+      <p id="lobbyHint" class="hint">Başlatmak için herkes hazır olmalı.</p>
+      <button id="leaveBtn" class="text-btn">← Ana menüye dön</button>
+    </section>
+
+    <section id="game" class="screen">
+      <div class="game-top"><div><div class="eyebrow">BİLGİ SAVAŞI</div><div class="question-count" id="questionCount">SORU 1 / 30</div></div><div class="timer" id="timer">20</div><div class="score-chip"><span>PUANIM</span><strong id="myScore">0</strong></div></div>
+      <div class="progress-track"><div id="progressBar"></div></div>
+      <div class="panel question-panel"><div class="question-label">SORU</div><h2 id="questionText">Soru yükleniyor...</h2><div id="answerGrid" class="answer-grid"></div><div id="answerStatus" class="answer-status">Cevabını seç.</div></div>
+      <div class="panel live-panel"><div class="panel-title"><span>CANLI DURUM</span><span id="answeredCount">0 / 0 cevapladı</span></div><div id="livePlayers" class="live-players"></div></div>
+    </section>
+
+    <section id="results" class="screen">
+      <div class="section-heading"><div class="eyebrow">◆ ARENA TAMAMLANDI ◆</div><h2>Yarışma Sonucu</h2><p>30 sorunun ardından sıralama belli oldu.</p></div>
+      <div id="winner" class="winner-card"></div>
+      <div class="panel results-panel"><div class="panel-title"><span>GENEL SIRALAMA</span><span>PUAN</span></div><div id="ranking"></div></div>
+      <div class="results-actions"><button id="backHome" class="gold-btn">ANA MENÜ</button></div>
+    </section>
+  </main>
+  <div id="toast" class="toast"></div>
+  <div id="rulesModal" class="modal hidden"><div class="modal-card"><button id="closeRules" class="modal-close">×</button><div class="eyebrow">ARENA KURALLARI</div><h2>Nasıl oynanır?</h2><ul><li>Bir odada en fazla 5 kişi yarışır.</li><li>Oda sahibi oyunu başlatır; herkes hazır olmalıdır.</li><li>Her yarışmada 30 farklı soru sorulur.</li><li>Her soru için 20 saniye vardır.</li><li>Doğru cevap 100 puan, hız bonusu en fazla 50 puandır.</li><li>Yanlış cevap ve cevapsız soru 0 puandır.</li><li>Cevap gönderildikten sonra değiştirilemez.</li></ul><button id="rulesOk" class="blue-btn">ANLADIM</button></div></div>
+  <script src="/socket.io/socket.io.js"></script><script src="/app.js"></script>
+</body></html>

@@ -1,0 +1,10 @@
+{
+  "name": "lol-bilgi-arenasi",
+  "version": "1.0.0",
+  "private": true,
+  "description": "5 oyuncuya kadar online, 30 soruluk LoL temalı arkadaş bilgi yarışması",
+  "main": "server.js",
+  "scripts": {"start": "node server.js", "dev": "node --watch server.js"},
+  "engines": {"node": ">=18"},
+  "dependencies": {"express": "^4.21.2", "socket.io": "^4.8.1"}
+}
