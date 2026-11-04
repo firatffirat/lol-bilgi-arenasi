@@ -14,7 +14,7 @@ const rooms = new Map();
 
 const MAX_PLAYERS = 5;
 const QUESTION_MS = 20_000;
-const REVEAL_MS = 2_500;
+const REVEAL_MS = 1_500;
 
 app.use(express.static('public'));
 
