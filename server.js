@@ -15,7 +15,6 @@ const rooms = new Map();
 const MAX_PLAYERS = 5;
 const QUESTION_MS = 20_000;
 const REVEAL_MS = 2_500;
-const TOTAL_QUESTIONS = questions.length;
 
 app.use(express.static('public'));
 
@@ -83,8 +82,9 @@ function currentPublicQuestion(room) {
   };
 }
 
+// DÜZELTİLDİ: Reveal aşamasından sonra da yeni soruya geçebilir.
 function sendQuestion(room) {
-  if (room.phase !== 'question' && room.phase !== 'starting') return;
+  if (!rooms.has(room.code) || room.phase === 'finished') return;
 
   if (room.index >= room.round.length) {
     return finishRoom(room);
@@ -103,7 +103,10 @@ function sendQuestion(room) {
   );
 
   clearTimeout(room.timer);
-  room.timer = setTimeout(() => closeQuestion(room), QUESTION_MS);
+  room.timer = setTimeout(
+    () => closeQuestion(room),
+    QUESTION_MS
+  );
 }
 
 function closeQuestion(room) {
@@ -130,7 +133,8 @@ function finishRoom(room) {
   room.phase = 'finished';
 
   const ranking = publicPlayers(room).sort(
-    (a, b) => b.score - a.score || a.name.localeCompare(b.name)
+    (a, b) => b.score - a.score ||
+      a.name.localeCompare(b.name)
   );
 
   io.to(room.code).emit('game:finished', {
@@ -183,7 +187,10 @@ io.on('connection', socket => {
     const playerName = cleanName(data.name);
 
     if (!playerName) {
-      return ack({ ok: false, error: 'Bir oyuncu adı gir.' });
+      return ack({
+        ok: false,
+        error: 'Bir oyuncu adı gir.'
+      });
     }
 
     let roomCode;
@@ -235,15 +242,24 @@ io.on('connection', socket => {
     const playerName = cleanName(data.name);
 
     if (!playerName) {
-      return ack({ ok: false, error: 'Bir oyuncu adı gir.' });
+      return ack({
+        ok: false,
+        error: 'Bir oyuncu adı gir.'
+      });
     }
 
     if (!room) {
-      return ack({ ok: false, error: 'Bu oda bulunamadı.' });
+      return ack({
+        ok: false,
+        error: 'Bu oda bulunamadı.'
+      });
     }
 
     if (room.phase !== 'lobby') {
-      return ack({ ok: false, error: 'Yarışma başlamış.' });
+      return ack({
+        ok: false,
+        error: 'Yarışma başlamış.'
+      });
     }
 
     if (room.players.size >= MAX_PLAYERS) {
@@ -271,7 +287,10 @@ io.on('connection', socket => {
     });
 
     emitLobby(room);
-    io.to(room.code).emit('notice', `${playerName} odaya katıldı.`);
+    io.to(room.code).emit(
+      'notice',
+      `${playerName} odaya katıldı.`
+    );
   });
 
   socket.on('room:ready', (ready, cb) => {
@@ -312,8 +331,10 @@ io.on('connection', socket => {
       });
     }
 
-    if (room.players.size === 0 ||
-        ![...room.players.values()].every(player => player.ready)) {
+    if (
+      room.players.size === 0 ||
+      ![...room.players.values()].every(player => player.ready)
+    ) {
       return ack({
         ok: false,
         error: 'Herkes hazır olmalı.'
@@ -334,7 +355,10 @@ io.on('connection', socket => {
     io.to(room.code).emit('game:started');
 
     clearTimeout(room.timer);
-    room.timer = setTimeout(() => sendQuestion(room), 900);
+    room.timer = setTimeout(
+      () => sendQuestion(room),
+      900
+    );
   });
 
   socket.on('game:answer', (choice, cb) => {
@@ -356,7 +380,11 @@ io.on('connection', socket => {
       });
     }
 
-    if (!Number.isInteger(choice) || choice < 0 || choice > 3) {
+    if (
+      !Number.isInteger(choice) ||
+      choice < 0 ||
+      choice > 3
+    ) {
       return ack({
         ok: false,
         error: 'Geçersiz cevap.'
@@ -369,7 +397,10 @@ io.on('connection', socket => {
     let earned = 0;
 
     if (correct) {
-      const remaining = Math.max(0, room.endsAt - Date.now());
+      const remaining = Math.max(
+        0,
+        room.endsAt - Date.now()
+      );
 
       earned = 100 + Math.floor(
         (remaining / QUESTION_MS) * 50
@@ -391,7 +422,11 @@ io.on('connection', socket => {
       score: player.score
     });
 
-    if ([...room.players.values()].every(p => p.answered)) {
+    if (
+      [...room.players.values()].every(
+        player => player.answered
+      )
+    ) {
       closeQuestion(room);
     }
   });
